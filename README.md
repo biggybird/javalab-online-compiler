@@ -5,8 +5,9 @@ A minimal, responsive Java practice editor with an OLED-style dark theme, standa
 ## Live Demo
 
 **Open JavaLab:** https://javalab-online-compiler.vercel.app
-alternative link 
-https://github.com/biggybird/javalab-online-compiler
+
+**Alternative link**
+https://biggybird.github.io/javalab-online-compiler/
 
 > The site is deployed, but running Java currently depends on a configured execution API. See the status note below before relying on the Run Code feature.
 
