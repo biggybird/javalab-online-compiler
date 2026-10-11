@@ -4,7 +4,6 @@ A minimal, responsive Java practice editor with an OLED-style dark theme, standa
 
 ## Live Demo
 
-- **Vercel:** https://javalab-online-compiler.vercel.app
 - **GitHub Pages (static UI):** https://biggybird.github.io/javalab-online-compiler/
 
 Java execution uses the Vercel serverless endpoint. GitHub Pages hosts only static files, so the page explicitly sends compile requests to the Vercel API instead of trying to call a nonexistent `/api/compile` route on `github.io`.
