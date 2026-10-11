@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#050505"><title>JavaLab • Online Java Compiler</title>
+<style>
+:root{color-scheme:dark;--bg:#050505;--panel:#101010;--line:#242424;--muted:#929292;--text:#f5f5f5;--green:#c8ff62;--red:#ff7777}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}
+.wrap{max-width:1000px;margin:auto;padding:24px 16px 40px}.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:24px}.brand{font-size:20px;font-weight:750;letter-spacing:-.5px}.brand span{color:var(--green)}.badge{border:1px solid #303030;border-radius:999px;padding:5px 10px;color:#bdbdbd;font-size:12px}
+h1{font-size:clamp(25px,5vw,38px);line-height:1.15;letter-spacing:-1.2px;margin:0 0 8px}.sub{color:var(--muted);margin:0 0 22px}.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:hidden;margin-bottom:14px}.bar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;border-bottom:1px solid var(--line);font-size:13px;color:#bdbdbd}.file{display:flex;align-items:center;gap:8px}.dot{width:8px;height:8px;border-radius:50%;background:var(--green)}
+textarea{display:block;width:100%;resize:vertical;border:0;outline:0;background:#080808;color:#eaeaea;font:14px/1.7 ui-monospace,SFMono-Regular,Menlo,monospace;padding:16px;tab-size:4;white-space:pre;overflow:auto;border-radius:0}#code{min-height:310px}#stdin{min-height:90px}textarea:focus{box-shadow:inset 0 0 0 1px #4c612d}
+.actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:16px 0 22px}.run{background:var(--green);color:#101010;border:0;border-radius:10px;padding:11px 18px;font-weight:800;cursor:pointer}.run:disabled{opacity:.55;cursor:wait}.secondary{background:#151515;border:1px solid #303030;color:#ddd;border-radius:10px;padding:10px 14px;cursor:pointer}.hint{color:var(--muted);font-size:12px;margin-left:auto}
+#output{min-height:100px;white-space:pre-wrap;overflow-wrap:anywhere;padding:16px;font:14px/1.7 ui-monospace,SFMono-Regular,Menlo,monospace;color:#d8d8d8}.error{color:var(--red)!important}.empty{color:#707070}.status{font-size:12px;color:var(--muted)}.status.ok{color:var(--green)}.status.bad{color:var(--red)}
+@media(max-width:520px){.wrap{padding:18px 12px 30px}.top{margin-bottom:20px}#code{min-height:280px}.hint{width:100%;margin-left:0}.bar{padding:11px 12px}textarea{padding:14px;font-size:13px}}
+</style></head>
+<body><main class="wrap">
+<header class="top"><div class="brand">Java<span>Lab</span> ☕</div><div class="badge">Java · OLED Dark</div></header>
+<h1>Write code. Run it.</h1><p class="sub">A lightweight Java compiler for practice, with standard input and readable errors.</p>
+<section class="card"><div class="bar"><span class="file"><i class="dot"></i> Main.java</span><span>Java</span></div><textarea id="code" spellcheck="false" autocapitalize="off" autocomplete="off">import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Hello, World!");
+    }
+}</textarea></section>
+<section class="card"><div class="bar"><span>Standard input</span><span>stdin</span></div><textarea id="stdin" spellcheck="false" placeholder="Type input for Scanner here..."></textarea></section>
+<div class="actions"><button class="run" id="run">▶ Run Code</button><button class="secondary" id="reset">Reset example</button><span class="hint">Tip: class name should be Main</span></div>
+<section class="card"><div class="bar"><span>Output</span><span id="status" class="status">Ready</span></div><pre id="output" class="empty">Your output will appear here.</pre></section>
+</main>
+<script>
+const starter=document.querySelector('#code').value;
+const code=document.querySelector('#code'), stdin=document.querySelector('#stdin'), output=document.querySelector('#output'), status=document.querySelector('#status'), run=document.querySelector('#run');
+run.addEventListener('click', async()=>{run.disabled=true;run.textContent='⏳ Compiling…';status.textContent='Running';status.className='status';output.className='';output.textContent='Compiling and running your Java code…';
+try{const r=await fetch('/api/compile',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:code.value,stdin:stdin.value})});let data;try{data=await r.json()}catch{throw new Error('Compiler service returned an unreadable response. Please try again.')}
+if(!r.ok||data.error){throw new Error(data.error||'Compiler service failed.')}
+const parts=[];if(data.stdout)parts.push(data.stdout.replace(/\n$/,''));if(data.compile_output)parts.push('Compilation output:\n'+data.compile_output.trim());if(data.stderr)parts.push('Error output:\n'+data.stderr.trim());if(data.message)parts.push(data.message);
+output.textContent=parts.filter(Boolean).join('\n\n')||'(Program finished with no output.)';output.className=(data.status&&data.status.id>3)||data.stderr||data.compile_output?'error':'';
+status.textContent=data.status?.description||'Finished';status.className='status '+(output.className?'bad':'ok');
+}catch(e){output.textContent=e.message;output.className='error';status.textContent='Failed';status.className='status bad'}finally{run.disabled=false;run.textContent='▶ Run Code'}});
+document.querySelector('#reset').addEventListener('click',()=>{code.value=starter;stdin.value='';output.textContent='Your output will appear here.';output.className='empty';status.textContent='Ready';status.className='status'});
+</script></body></html>
