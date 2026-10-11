@@ -31,7 +31,8 @@ export default async function handler(req, res) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         compiler: compiler.name,
-        code,
+        // Wandbox's Java template compiles prog.java, so map the public Main class to prog.
+        code: code.replace(/public\\s+class\\s+Main\\b/, "public class prog").replace(/(?<!public\\s)\\bclass\\s+Main\\b/, "class prog"),
         stdin: String(stdin),
         save: false,
         "compiler-option-raw": "",
@@ -45,7 +46,7 @@ export default async function handler(req, res) {
 
     const stdout = result.program_output || "";
     const stderr = result.program_error || "";
-    const compileOutput = result.compiler_output || "";
+    const compileOutput = [result.compiler_error, result.compiler_output].filter(Boolean).join("\\n");
     const statusCode = Number(result.status);
     const failed = (Number.isFinite(statusCode) && statusCode !== 0) || Boolean(stderr) || Boolean(compileOutput);
 
