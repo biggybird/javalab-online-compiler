@@ -7,7 +7,7 @@ A minimal, responsive Java practice editor with an OLED-style dark theme, standa
 - **Vercel:** https://javalab-online-compiler.vercel.app
 - **GitHub Pages (static UI):** https://biggybird.github.io/javalab-online-compiler/
 
-> Java execution requires the Vercel serverless endpoint. GitHub Pages can serve the interface, but it cannot run the `/api/compile` backend by itself.
+Java execution uses the Vercel serverless endpoint. GitHub Pages hosts only static files, so the page explicitly sends compile requests to the Vercel API instead of trying to call a nonexistent `/api/compile` route on `github.io`.
 
 ## Explore the projects
 
@@ -40,7 +40,7 @@ The integration uses these public endpoints:
 
 Wandbox is a third-party service. Availability, execution limits, supported compiler versions, and its terms can change. A public API does not guarantee uninterrupted service. Do not submit secrets or sensitive data as source code or input.
 
-## Run locally
+## Troubleshooting\n\n- **“Compiler service returned an unreadable response”**: make sure the Vercel deployment is live at the URL above. GitHub Pages cannot host the serverless function itself.\n- **HTTP 502 / Wandbox unavailable**: the public Wandbox service may be temporarily unavailable or rate-limited; wait a little and retry.\n- **Compilation errors**: check the compiler output in the console. Keep the Java entry class named `Main`.\n- **Input-based programs**: enter values in Standard input, then press Run Code.\n\n## Run locally
 
 This is a Vercel project. Install the Vercel CLI and start the development server:
 
