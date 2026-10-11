@@ -2,6 +2,13 @@
 
 A minimal, responsive Java practice editor with an OLED-style dark theme, standard input, and output/error display.
 
+## Explore the projects
+
+- **JavaLab Online Compiler:** [Open this repository](https://github.com/biggybird/javalab-online-compiler)
+- **ByteForge Java Lab:** [Open this repository](https://github.com/biggybird/byteforge-java-compiler)
+
+> These are repository links. A live demo is only available if GitHub Pages or another hosting service has been configured and deployed.
+
 > **Status: NOT CURRENTLY WORKING**
 >
 > Running Java requires an available, authorized execution API. The previous Piston public API used by this project became whitelist-only in February 2026. The configured Judge0-compatible endpoint may also reject requests, be rate-limited, or require credentials. As a result, the Run Code feature will not work until a valid execution service is configured. This repository is published as an open-source starter project, not as a working hosted compiler.
