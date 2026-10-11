@@ -4,55 +4,66 @@ A minimal, responsive Java practice editor with an OLED-style dark theme, standa
 
 ## Live Demo
 
-**Open JavaLab:** https://javalab-online-compiler.vercel.app
+- **Vercel:** https://javalab-online-compiler.vercel.app
+- **GitHub Pages (static UI):** https://biggybird.github.io/javalab-online-compiler/
 
-**Alternative link**
-https://biggybird.github.io/javalab-online-compiler/
-
-> The site is deployed, but running Java currently depends on a configured execution API. See the status note below before relying on the Run Code feature.
+> Java execution requires the Vercel serverless endpoint. GitHub Pages can serve the interface, but it cannot run the `/api/compile` backend by itself.
 
 ## Explore the projects
 
-- **JavaLab Online Compiler:** [Open this repository](https://github.com/biggybird/javalab-online-compiler)
-- **ByteForge Java Lab:** [Open this repository](https://github.com/biggybird/byteforge-java-compiler)
-
-> These are repository links. A live demo is only available if the hosting service has been configured and deployed.
-
-> **Status: NOT CURRENTLY WORKING**
->
-> Running Java requires an available, authorized execution API. The previous Piston public API used by this project became whitelist-only in February 2026. The configured Judge0-compatible endpoint may also reject requests, be rate-limited, or require credentials. As a result, the Run Code feature will not work until a valid execution service is configured. This repository is published as an open-source starter project, not as a fully working hosted compiler.
+- **JavaLab Online Compiler:** https://github.com/biggybird/javalab-online-compiler
+- **ByteForge Java Lab:** https://github.com/biggybird/byteforge-java-compiler
 
 ## Features
-- OLED-style dark UI
-- Responsive mobile layout
+
+- OLED-style dark UI and responsive mobile layout
 - Java `Main` class editor
-- Standard input field for `Scanner`
-- Output and compilation-error display
-- Vercel serverless API adapter
+- Standard input support for `Scanner`
+- Program output and compilation/runtime error display
+- Serverless API adapter using the public **Wandbox API**
+- No API key is required by this project for the default Wandbox integration
+
+## How code execution works
+
+When you press **Run Code**, the UI sends your Java source and standard input to `/api/compile`. The Vercel serverless function:
+
+1. Retrieves the currently available Java compiler list from Wandbox.
+2. Selects an available OpenJDK compiler.
+3. Submits the code to Wandbox's public compile endpoint.
+4. Returns program output and compiler/runtime messages to the UI.
+
+The integration uses these public endpoints:
+
+- Compiler list: https://wandbox.org/api/list.json
+- Compile code: https://wandbox.org/api/compile.json
+- API documentation: https://github.com/melpon/wandbox/blob/master/kennel2/API.rst
+
+Wandbox is a third-party service. Availability, execution limits, supported compiler versions, and its terms can change. A public API does not guarantee uninterrupted service. Do not submit secrets or sensitive data as source code or input.
 
 ## Run locally
-This is a Vercel project. Install the Vercel CLI and run:
+
+This is a Vercel project. Install the Vercel CLI and start the development server:
 
 ```bash
-npm i -g vercel
+npm install -g vercel
 vercel dev
 ```
 
-Open the local URL printed by the CLI.
-
-## Configure the execution API
-Set these environment variables in Vercel project settings:
-
-- `JUDGE0_API_URL`: Base URL of a Judge0-compatible execution API you are authorized to use (default: `https://ce.judge0.com`)
-- `JUDGE0_API_KEY`: Optional API token if your chosen provider requires one
-
-The API adapter sends Java source using Judge0 language ID `62` (Java). Providers can have different authentication requirements; verify their documentation and terms before use. Never commit API keys to this repository.
+Open the local URL printed by the CLI. The `api/compile.js` serverless function will proxy compilation requests to Wandbox.
 
 ## Deploy to Vercel
-Import this repository into Vercel and deploy it. Add the required environment variables in **Project Settings → Environment Variables** before expecting execution to work.
 
-## Security note
-Do not expose an unrestricted execution endpoint without rate limits and sandboxing. Use a reputable, sandboxed execution provider or maintain your own isolated Judge0/Piston service.
+1. Import this repository into Vercel.
+2. Deploy the project using the repository root as the project root.
+3. Ensure the deployment includes `api/compile.js`.
+4. Open the deployed Vercel URL and test a simple Java program.
+
+No `JUDGE0_API_URL` or `JUDGE0_API_KEY` environment variables are required for the Wandbox implementation.
+
+## Security and reliability
+
+Code submitted through this project is sent to Wandbox for compilation and execution. Use a reputable execution provider, respect its terms and limits, and avoid sending private data. If you expose the endpoint publicly, consider adding request rate limits to reduce abuse.
 
 ## License
+
 MIT
