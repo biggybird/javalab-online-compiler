@@ -39,8 +39,9 @@ const root=document.documentElement, themeToggle=document.querySelector('#themeT
 function setTheme(theme){root.dataset.theme=theme;themeToggle.textContent=theme==='light'?'🌙 Dark mode':'☀️ Light mode';document.querySelector('meta[name="theme-color"]').content=theme==='light'?'#f5f5fb':'#0b0b12';try{localStorage.setItem('javalab-theme',theme)}catch{}}
 let savedTheme='dark';try{savedTheme=localStorage.getItem('javalab-theme')||'dark'}catch{}setTheme(savedTheme);
 themeToggle.addEventListener('click',()=>setTheme(root.dataset.theme==='dark'?'light':'dark'));
+const compileEndpoint=location.hostname.endsWith('github.io')?'https://javalab-online-compiler.vercel.app/api/compile':'/api/compile';
 run.addEventListener('click', async()=>{run.disabled=true;run.innerHTML='<span class="run-icon">⏳</span> Compiling…';status.textContent='RUNNING';status.className='status';output.className='';output.textContent='Compiling and running your Java code…';
-try{const r=await fetch('/api/compile',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:code.value,stdin:stdin.value})});let data;try{data=await r.json()}catch{throw new Error('Compiler service returned an unreadable response. Please try again.')}
+try{const r=await fetch(compileEndpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:code.value,stdin:stdin.value})});let data;try{data=await r.json()}catch{throw new Error('Compiler service returned an unreadable response. If you opened the GitHub Pages version, check that the Vercel API is deployed and available, then try again.')}
 if(!r.ok||data.error){throw new Error(data.error||'Compiler service failed.')}
 const parts=[];if(data.stdout)parts.push(data.stdout.replace(/\n$/,''));if(data.compile_output)parts.push('Compilation output:\n'+data.compile_output.trim());if(data.stderr)parts.push('Error output:\n'+data.stderr.trim());if(data.message)parts.push(data.message);
 output.textContent=parts.filter(Boolean).join('\n\n')||'(Program finished with no output.)';output.className=(data.status&&data.status.id>3)||data.stderr||data.compile_output?'error':'';
