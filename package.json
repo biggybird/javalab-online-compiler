@@ -1,0 +1,8 @@
+{
+  "name": "javalab-online-compiler",
+  "version": "1.0.0",
+  "private": false,
+  "type": "module",
+  "description": "OLED dark-mode Java practice editor. Execution API configuration required.",
+  "license": "MIT"
+}
