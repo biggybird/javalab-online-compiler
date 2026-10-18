@@ -41,6 +41,8 @@ Wandbox is a third-party service. Availability, execution limits, supported comp
 
 ## Troubleshooting\n\n- **“Compiler service returned an unreadable response”**: make sure the Vercel deployment is live at the URL above. GitHub Pages cannot host the serverless function itself.\n- **HTTP 502 / Wandbox unavailable**: the public Wandbox service may be temporarily unavailable or rate-limited; wait a little and retry.\n- **Compilation errors**: check the compiler output in the console. Keep the Java entry class named `Main`.\n- **Input-based programs**: enter values in Standard input, then press Run Code.\n\n## Run locally
 
+IT'S NOT A VERCEL PROJECT ANYMORE!!!
+
 This is a Vercel project. Install the Vercel CLI and start the development server:
 
 ```bash
